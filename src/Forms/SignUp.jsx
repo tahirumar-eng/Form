@@ -13,7 +13,7 @@ import './SignUp.css';
          username:joi.string().required().label('username'),
          email:joi.string().email({ minDomainAtoms: 2 }).label('email'),
          password:joi.string().alphanum().min(4).max(12).label('password'),
-         confirmpassword:joi.string().required().label('confirmpassword')
+         confirmpassword:joi.any().equal(joi.ref('password')).required()
 
      }
      validateproperty=({name,value})=>{
@@ -28,12 +28,30 @@ import './SignUp.css';
         for(let item of error.details) error[item.path[0]]=item.message;
         return error    
      }
-     handleSubmit=(e)=>{
+     handleSubmit=async(e)=>{
          e.preventDefault();
          console.log('submitted');
          const error=this.validate();
          this.setState({error:error ||{}})
          if(error)return
+         
+try {
+    const response = await fetch("http://localhost:5000/api/users/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: this.state.account.username,
+        email: this.state.account.email,
+        password: this.state.account.password
+      })
+    });
+    console.log("I am here...");
+    const responseData = await response.json();
+    this.props.history.push("/login");
+     } catch (error) {
+    return console.log(error);
+  }
+   //      this.props.history.push('/login')
      }
 
      handleChange=({currentTarget:input})=>{

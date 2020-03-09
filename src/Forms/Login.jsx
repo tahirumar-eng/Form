@@ -14,10 +14,10 @@ class Login extends Component {
     }
     validate=()=>{
         const {error}=joi.validate(this.state.account,this.schema ,{abortEarly:false})
-        console.log(error)
         if(!error) return null;
         for(let item of error.details) error[item.path[0]]=item.message;
         return error
+
 
     }
     handleSubmit=e=>{
@@ -26,6 +26,11 @@ class Login extends Component {
        console.log(error)
        this.setState({error:error || {}})
        if(error) return
+
+    //    const user={
+    //        email:this.state.account.email,
+    //        password:this.state.account.password
+    //    }
     
         console.log('submitted')
     } 
